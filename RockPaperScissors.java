@@ -7,6 +7,7 @@ import java.util.Random;
 public class RockPaperScissors extends JFrame{
 	private JLabel resultLabel;
 	private JLabel computerMoveLabel;
+	private JLabel computerMoveIconLabel;
 	private ImageIcon rockIcon;
 	private ImageIcon paperIcon;
 	private ImageIcon scissorsIcon;
@@ -28,14 +29,20 @@ public class RockPaperScissors extends JFrame{
 		resultLabel.setFont(new Font("Arial", Font.BOLD, 20));
 		resultLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
+		JPanel computerMovePanel = new JPanel();
+		computerMovePanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+
 		computerMoveLabel = new JLabel("Computer's move: ", SwingConstants.CENTER);
 		computerMoveLabel.setFont(new Font("Arial", Font.PLAIN, 16));
-		computerMoveLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+		computerMoveIconLabel = new JLabel();
+
+		computerMovePanel.add(computerMoveLabel);
+		computerMovePanel.add(computerMoveIconLabel);
 
 		infoPanel.add(Box.createVerticalStrut(20));
 		infoPanel.add(resultLabel);
 		infoPanel.add(Box.createVerticalStrut(10));
-		infoPanel.add(computerMoveLabel);
+		infoPanel.add(computerMovePanel);
 		infoPanel.add(Box.createVerticalStrut(20));
 
 		JPanel buttonPanel = new JPanel();
@@ -70,6 +77,7 @@ public class RockPaperScissors extends JFrame{
 		String computerMove = rps[new Random().nextInt(rps.length)];
 
 		computerMoveLabel.setText("Computer's move: " + getFullMove(computerMove));
+		computerMoveIconLabel.setIcon(getMoveIcon(computerMove));
 
 		String result;
 
@@ -90,6 +98,15 @@ public class RockPaperScissors extends JFrame{
 			case "p": return "Paper";
 			case "s": return "Scissors";
 			default: return "";
+		}
+	}
+
+	private ImageIcon getMoveIcon(String move) {
+		switch (move) {
+			case "r": return rockIcon;
+			case "p": return paperIcon;
+			case "s": return scissorsIcon;
+			default: return null;
 		}
 	}
 
