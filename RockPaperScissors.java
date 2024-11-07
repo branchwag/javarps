@@ -1,58 +1,101 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
 import java.util.Random;
-import java.util.Scanner;
+//import java.util.Scanner;
 
-public class RockPaperScissors {
-	public static void main(String[] args) {
-		Scanner scanner = new Scanner(System.in);
-		while(true) {
+public class RockPaperScissors extends JFrame{
+	private JLabel resultLabel;
+	private JLabel computerMoveLabel;
+	private ImageIcon rockIcon;
+	private ImageIcon paperIcon;
+	private ImageIcon scissorsIcon;
+
+	public RockPaperScissors() {
+		setTitle("Rock Paper Scissors");
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setLayout(new BorderLayout());
+		setResizable(false);
+
+		rockIcon = new ImageIcon(new ImageIcon("rock.png").getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH));
+		paperIcon = new ImageIcon(new ImageIcon("paper.png").getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH));
+		scissorsIcon = new ImageIcon(new ImageIcon("scissors.png").getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH));
+
+		JPanel infoPanel = new JPanel();
+		infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.Y_AXIS));
+
+		resultLabel = new JLabel("Choose your move!", SwingConstants.CENTER);
+		resultLabel.setFont(new Font("Arial", Font.BOLD, 20));
+		resultLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+		computerMoveLabel = new JLabel("Computer's move: ", SwingConstants.CENTER);
+		computerMoveLabel.setFont(new Font("Arial", Font.PLAIN, 16));
+		computerMoveLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+		infoPanel.add(Box.createVerticalStrut(20));
+		infoPanel.add(resultLabel);
+		infoPanel.add(Box.createVerticalStrut(10));
+		infoPanel.add(computerMoveLabel);
+		infoPanel.add(Box.createVerticalStrut(20));
+
+		JPanel buttonPanel = new JPanel();
+		buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 20));
+		
+		JButton rockButton = createMoveButton("Rock", rockIcon);
+		JButton paperButton = createMoveButton("Paper", paperIcon);
+		JButton scissorsButton = createMoveButton("Scissors", scissorsIcon);
+
+		buttonPanel.add(rockButton);
+		buttonPanel.add(paperButton);
+		buttonPanel.add(scissorsButton);
+
+		add(infoPanel, BorderLayout.NORTH);
+		add(buttonPanel, BorderLayout.CENTER);
+
+		pack();
+		setSize(400, 300);
+		setLocationRelativeTo(null);
+	}
+
+	private JButton createMoveButton(String move, ImageIcon icon) {
+		JButton button = new JButton(move, icon);
+		button.setVerticalTextPosition(SwingConstants.BOTTOM);
+		button.setHorizontalTextPosition(SwingConstants.CENTER);
+		button.addActionListener(e -> playGame(move.toLowerCase().substring(0, 1)));
+		return button;
+	}
+
+	private void playGame(String playerMove) {
 		String[] rps = {"r", "p", "s"};
 		String computerMove = rps[new Random().nextInt(rps.length)];
 
-		String playerMove;
+		computerMoveLabel.setText("Computer's move: " + getFullMove(computerMove));
 
-		while(true) {
-		System.out.println("Please enter your move (r, p, or s)");
-		playerMove = scanner.nextLine();
-		if (playerMove.equals("r") || playerMove.equals("p") || playerMove.equals("s")) {
-			break;
-			}
-		System.out.println(playerMove + " is not a valid move.");
-		}
-
-		System.out.println("Computer played: " + computerMove);
+		String result;
 
 		if (playerMove.equals(computerMove)) {
-			System.out.println("The game was a tie!");
+			result = "It's a tie!";
+		} else if ((playerMove.equals("r") && computerMove.equals("s")) || (playerMove.equals("p") && computerMove.equals("r")) || (playerMove.equals("s") && computerMove.equals("p"))) {
+			result = "You win!";
+		} else {
+			result = "You lose!";
 		}
-		else if (playerMove.equals("r")) {
-			if (computerMove.equals("p")) {
-				System.out.println("You lose!");
-			} else if (computerMove.equals("s")) {
-				System.out.println("You win!");
-			}
-		}
-		else if (playerMove.equals("p")) {
-			if (computerMove.equals("s")) {
-				System.out.println("You lose!");
-			} else if (computerMove.equals("r")) {
-				System.out.println("You win!");
-			}
-		}
-		else if (playerMove.equals("s")) {
-			if (computerMove.equals("r")) {
-				System.out.println("You lose!");
-			} else if (computerMove.equals("p")) {
-				System.out.println("You win!");
-			}
-		}
-	System.out.println("Play again? (y/n)");
-	String playAgain = scanner.nextLine();
-	
-	if (!playAgain.equals("y")) {
-		break;
+		
+		resultLabel.setText(result);
 	}
-	
-	scanner.close();
-    }
-  }
+
+	private String getFullMove(String move) {
+		switch (move) {
+			case "r": return "Rock";
+			case "p": return "Paper";
+			case "s": return "Scissors";
+			default: return "";
+		}
+	}
+
+	public static void main(String[] args) {
+		SwingUtilities.invokeLater(() -> {
+			new RockPaperScissors().setVisible(true);
+	});
+	}
 }
